@@ -1,6 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
-const rateLimit = require('express-rate-limit');
+// const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
@@ -8,18 +8,15 @@ const hpp = require('hpp');
 const path = require('path');
 const faceapi = require('@vladmandic/face-api');
 
-const tourRouter = require('./route/tourRoutes');
-const userRouter = require('./route/userRoutes');
-const AppError = require('./utils/appError');
-const errorMiddleware = require('./controllers/errorController');
-const reviewRouter = require('./route/reviewRoutes');
-const faceRoutes = require('./route/faceRoutes');
 const multer = require('multer');
 const fs = require('fs');
 const bodyParser = require('body-parser');
 
 // Security Middleware Lib Import
 const cors = require('cors');
+
+const AppError = require('./utils/appError');
+const faceRoutes = require('./route/faceRoutes');
 
 // Security Middleware Implement
 
@@ -48,13 +45,13 @@ const loadModels = async () => {
 loadModels();
 
 // requests limiter from same api
-const limiter = rateLimit({
-  max: 100,
-  windowMs: 60 * 60 * 1000,
-  message: 'Too many requests from this ip. Please try again later.'
-});
+// const limiter = rateLimit({
+//   max: 100,
+//   windowMs: 60 * 60 * 1000,
+//   message: 'Too many requests from this ip. Please try again later.'
+// });
 
-app.use('/api', limiter);
+// app.use('/api', limiter);
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
@@ -103,7 +100,7 @@ app.all('*', (req, res, next) => {
 });
 
 // global error handling middleware
-app.use(errorMiddleware);
+// app.use(errorMiddleware);
 
 module.exports = app;
 

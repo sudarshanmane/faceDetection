@@ -2,8 +2,8 @@ const multer = require('multer');
 const faceapi = require('@vladmandic/face-api');
 const canvas = require('canvas');
 const path = require('path');
-const express = require('express');
 const fs = require('fs');
+const express = require('express');
 
 // Set up canvas environment for Node.js
 const { Canvas, Image, ImageData } = canvas;
