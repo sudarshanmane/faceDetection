@@ -93,6 +93,10 @@ app.use(
 
 app.use('/api/v1/uploads', faceRoutes);
 
+app.get('/', (req, res) => {
+  res.send('Welcome to the Node.js API!');
+});
+
 // for handling incorrect url's
 // Note: always define this after all other routes
 app.all('*', (req, res, next) => {
