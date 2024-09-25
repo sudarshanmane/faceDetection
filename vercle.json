@@ -1,1 +1,11 @@
-{ "version": 2, "rewrites": [{ "source": "/(.*)", "destination": "/api/v1/uploads" }] }
+{
+  "builds": [
+    {
+      "src": "./server.js",
+      "use": "@vercel/build",
+      "config": {
+        "outputDirectory": "dist" 
+      }
+    }
+  ]
+}
