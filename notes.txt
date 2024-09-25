@@ -1,0 +1,41 @@
+Type of relationships Between Data
+
+1. 1:1
+
+one movie ---> one name
+
+2. 1:Many
+
+one movie ---> many awards 
+one movie ---> mane actors
+one movie ---> many reviews
+
+3. Many:Many
+
+one movie ---> many actors
+many movies <--- one actor
+
+
+--> Referencing and Embedding
+
+
+ ---> * direct populate vs virtual populate 
+ when a schema has id of another schema then we can directly populate else we have to 
+ populate it using virtual
+
+ When a field in one schema directly references the _id of another schema using 
+ mongoose.Schema.ObjectId and the ref option, you can directly use .populate()
+  to automatically fetch the referenced documents.
+
+ When you want to reference documents in another collection but don't store their 
+ ObjectIds directly, or when you want to establish a reverse relationship, you use a virtual field.
+
+
+
+write this only when not defined 'tour' variable in schema
+// reviewsSchema.virtual('tour', {
+//   ref: 'Tour',
+//   foreignId: 'tour',
+//   localId: '_id'
+// });
+
