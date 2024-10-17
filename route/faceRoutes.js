@@ -62,7 +62,7 @@ const writeFileMap = fileMap => {
 faceRoutes.post('/', upload.single('file'), async (req, res) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ message: 'No file uploaded' });
+      return res.status(201).json({ message: 'No file uploaded' });
     }
 
     const imgPath = req.file.path;
@@ -75,7 +75,7 @@ faceRoutes.post('/', upload.single('file'), async (req, res) => {
       .withFaceDescriptors();
 
     if (detections.length === 0) {
-      return res.status(400).json({ message: 'No faces detected' });
+      return res.status(201).json({ message: 'No faces detected' });
     }
 
     const filename = req.file.filename; // Get the filename from multer
@@ -93,17 +93,20 @@ faceRoutes.post('/', upload.single('file'), async (req, res) => {
     res.status(500).json({ message: 'Error processing image', error });
   }
 });
+
 faceRoutes.post('/match', upload1.single('file'), async (req, res) => {
   console.log('Inside /match route');
+
+  console.log(req.file, req.body.file);
   try {
     if (!req.file) {
-      return res.status(400).json({ message: 'No file uploaded' });
+      return res.status(201).json({ message: 'No file uploaded' });
     }
 
     // Load the uploaded image from buffer
     const uploadedImg = await canvas.loadImage(req.file.buffer);
     if (!uploadedImg) {
-      return res.status(400).json({ message: 'Invalid image file' });
+      return res.status(201).json({ message: 'Invalid image file' });
     }
 
     // Detect faces with landmarks and descriptors in the uploaded image
@@ -114,7 +117,7 @@ faceRoutes.post('/match', upload1.single('file'), async (req, res) => {
 
     if (uploadedDetections.length === 0) {
       return res
-        .status(400)
+        .status(201)
         .json({ message: 'No faces detected in uploaded image' });
     }
 

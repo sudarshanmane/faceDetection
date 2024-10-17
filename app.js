@@ -70,7 +70,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(cors());
+// Or, configure CORS for specific origins
+app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(express.urlencoded({ limit: '50mb' }));
 
 // Body Parser Implement
