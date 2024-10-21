@@ -1,3 +1,4 @@
+/* eslint-disable no-continue */
 const multer = require('multer');
 const faceapi = require('@vladmandic/face-api');
 const canvas = require('canvas');
@@ -34,6 +35,7 @@ const loadModels = async () => {
   await faceapi.nets.faceLandmark68Net.loadFromDisk(modelPath);
   await faceapi.nets.faceRecognitionNet.loadFromDisk(modelPath);
 };
+
 loadModels()
   .then(() => {
     console.log('Face-api models loaded successfully');
@@ -78,26 +80,21 @@ faceRoutes.post('/', upload.single('file'), async (req, res) => {
       return res.status(201).json({ message: 'No faces detected' });
     }
 
-    const filename = req.file.filename; // Get the filename from multer
+    const filename = req?.file?.filename; // Get the filename from multer
     const fileMap = readFileMap(); // Read current file map
 
     // Update fileMap with new ID and filename
-    fileMap[id] = filename;
+    fileMap[id] = { filename: filename, purpose: req.body?.purpose };
     writeFileMap(fileMap); // Save updated fileMap
 
-    res
-      .status(200)
-      .json({ message: 'Image and descriptors saved successfully' });
+    res.status(200).json({ message: 'Image saved successfully' });
   } catch (error) {
     console.error('Error processing image:', error);
-    res.status(500).json({ message: 'Error processing image', error });
+    res.status(400).json({ message: 'Error processing image', error });
   }
 });
 
 faceRoutes.post('/match', upload1.single('file'), async (req, res) => {
-  console.log('Inside /match route');
-
-  console.log(req.file, req.body.file);
   try {
     if (!req.file) {
       return res.status(201).json({ message: 'No file uploaded' });
@@ -127,6 +124,8 @@ faceRoutes.post('/match', upload1.single('file'), async (req, res) => {
     const fileMap = readFileMap(); // Read the fileMap to get the mapping
     const matches = [];
 
+    const accuracyThreshold = 0.7; // Adjust this value based on the desired accuracy level
+
     for (const file of files) {
       const filePath = path.join(uploadsDir, file);
       const img = await canvas.loadImage(filePath);
@@ -139,6 +138,7 @@ faceRoutes.post('/match', upload1.single('file'), async (req, res) => {
 
       if (detections.length === 0) continue;
 
+      // eslint-disable-next-line no-restricted-syntax
       for (const detection of detections) {
         const storedDescriptor = detection.descriptor;
         const distance = faceapi.euclideanDistance(
@@ -146,13 +146,15 @@ faceRoutes.post('/match', upload1.single('file'), async (req, res) => {
           storedDescriptor
         );
 
-        if (distance < 0.6) {
-          // Threshold for matching
-          // Get the ID from the fileMap based on the filename
-          const id = Object.keys(fileMap).find(key => fileMap[key] === file);
+        // Apply accuracy threshold for matching
+        if (distance <= accuracyThreshold) {
+          const id = Object.keys(fileMap).find(
+            key => fileMap[key].filename === file
+          );
+
           matches.push({
-            id: id,
-            filename: file,
+            purpose: fileMap[id]?.purpose || 'Unknown',
+            id: id || 'Unknown',
             distance: distance
           });
         }
