@@ -124,7 +124,7 @@ faceRoutes.post('/match', upload1.single('file'), async (req, res) => {
     const fileMap = readFileMap(); // Read the fileMap to get the mapping
     const matches = [];
 
-    const accuracyThreshold = 0.7; // Adjust this value based on the desired accuracy level
+    const accuracyThreshold = 0.4; // Adjust this value based on the desired accuracy level
 
     for (const file of files) {
       const filePath = path.join(uploadsDir, file);
