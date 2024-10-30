@@ -93,9 +93,9 @@ app.use(
   })
 );
 
-app.use('/api/v1/facedetection/uploads/', faceRoutes);
+app.use('/api/v1/uploads/', faceRoutes);
 
-app.get('/api/v1/facedetection', (req, res) => {
+app.get('/api/v1', (req, res) => {
   res.send('Welcome to the Node.js API!');
 });
 
